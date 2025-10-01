@@ -50,9 +50,8 @@ El objetivo es limpiar, validar y graficar los datos para identificar patrones d
 
 ---
 
-## 🎯 Objetivo
-- Detectar y eliminar valores inválidos en los datos de calidad del aire.
-- Evaluar excedencias respecto a las normativas ambientales.
+## 🎯 Objetivos
+- Detectar y reasignar valores inválidos en los datos de calidad del aire.
 - Visualizar patrones **diarios, mensuales y anuales** de concentración de PM2.5.
 - Relacionar la variabilidad del contaminante con la **precipitación semanal**.
 

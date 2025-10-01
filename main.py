@@ -62,17 +62,16 @@ for i in range(len(rutas)):
 
 
 #¿ Función para validar y limpiar los datos
-def validar_datos(parametro):
+def validar_datos(parametro, variable):
     """
     Itera sobre los meses, días y horas del año 2017 para:
-      - eliminar horas con flag 151 (inválidas)
-      - eliminar días con menos de 18 datos válidos
-    Implementa try/except para evitar KeyError cuando se intenta .loc con timestamps que no existen.
+      - asignar NaN en 'variable' cuando 'parametro' = 151 (inválidos)
+      - eliminar días con menos de 18 datos válidos en 'variable'
     """
     for mes in meses:
         mes_num = meses.index(mes) + 1
 
-        # Paso 1: eliminar horas con flag 151
+        # Paso 1: invalidar datos con flag 151
         for dia in range(1, dias_meses[meses.index(mes)] + 1):
             for hora in range(24):
                 fecha_inicio = f"2017-{mes_num:02d}-{dia:02d} {hora:02d}:00:00"
@@ -81,53 +80,34 @@ def validar_datos(parametro):
                 else:
                     fecha_fin = f"2017-{mes_num:02d}-{dia:02d} {hora+1:02d}:00:00"
                 try:
-                    # Puede devolver Series vacía si no hay datos en ese rango
                     serie_conteo = diccionario_data_frames[mes].loc[fecha_inicio:fecha_fin][parametro].value_counts()
                     if 151 in serie_conteo.index:
-                        diccionario_data_frames[mes].drop(
-                            diccionario_data_frames[mes].loc[fecha_inicio:fecha_fin].index,
-                            inplace=True
-                        )
+                        # En vez de borrar fila, asignamos NaN solo en la variable correspondiente
+                        diccionario_data_frames[mes].loc[fecha_inicio:fecha_fin, variable] = np.nan
                 except Exception:
-                    # ignorar cualquier problema
                     continue
 
-        # Paso 2: eliminar días con menos de 18 datos válidos
+        # Paso 2: eliminar días con menos de 18 datos válidos en esa variable
         try:
-            conteo_diario = diccionario_data_frames[mes].resample("D")[parametro].count()
+            conteo_diario = diccionario_data_frames[mes].resample("D")[variable].count()
         except Exception:
-            # Si no existe el parámetro en este mes o no hay datos, saltamos
             continue
 
         dias_invalidos = conteo_diario[conteo_diario < 18].index
         if len(dias_invalidos) == 0:
             continue
 
-        # Intento directo (puede fallar si esos timestamps exactos no están en el índice)
         try:
-            diccionario_data_frames[mes].drop(
-                diccionario_data_frames[mes].loc[dias_invalidos].index,
-                inplace=True
-            )
-        except KeyError:
-            # Fallback seguro: usar máscara por fecha normalizada (midnight) para borrar todas las filas del día
-            # normalize() convierte cualquier timestamp a la medianoche del mismo día -> permite comparar fecha a fecha
-            dias_norm = dias_invalidos.normalize()
-            idx_normalizado = diccionario_data_frames[mes].index.normalize()
-            mask = idx_normalizado.isin(dias_norm)
-            if mask.any():
-                diccionario_data_frames[mes].drop(diccionario_data_frames[mes].loc[mask].index, inplace=True)
-            # si mask.any() es False, no hay nada que borrar y seguimos
-
+            # Asignar NaN solo en la variable de esos días incompletos
+            mask = diccionario_data_frames[mes].index.normalize().isin(dias_invalidos.normalize())
+            diccionario_data_frames[mes].loc[mask, variable] = np.nan
         except Exception:
-            # Capturar otras excepciones inesperadas y continuar
             continue
 
-
 #¿ Llamada a la función para validar y limpiar los datos para el parámetro deseado
-validar_datos('calidad_pm25') #? Para calidad pm2.5
-validar_datos('calidad_pliquida_ssr') #? Para calidad de precipitación líquida
-#validar_datos('calidad_taire10_ssr') #? Para calidad de temperatura del aire a 10m
+validar_datos(parametro='calidad_pm25', variable='pm25') #? Para calidad pm2.5
+validar_datos(parametro='calidad_pliquida_ssr', variable='pliquida_ssr') #? Para calidad de precipitación líquida
+#validar_datos(parametro='calidad_taire10_ssr',variable='calidad_taire10_ssr') #? Para calidad de temperatura del aire a 10m
 
 
 #¿ Concatenar todos los DataFrames mensuales en uno anual y ordenar índice por fecha
