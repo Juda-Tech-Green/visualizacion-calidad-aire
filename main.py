@@ -17,12 +17,13 @@ rutas = ['./Datos_Calidad_Aire_Trabajo_1/estacion_data_calidadaire_38_20170101_2
 #¿ Lista con meses y diccionario para almacenar los DataFrames
 meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
                'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+dias_meses = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 diccionario_data_frames = {}
 
 #¿ Depurar columnas no necesarias y asignar DataFrames al diccionario de acuerdo al mes
 for i in range(len(rutas)):
     data_frame_mes = pd.read_csv(rutas[i], sep=',')
-    diccionario_data_frames[meses[i]] = data_frame_mes.drop(columns=['codigoSerial',
+    datos_mes = data_frame_mes.drop(columns=['codigoSerial',
                         'pm10','calidad_pm10',
                         'pm1','calidad_pm1',
                         'no','calidad_no',
@@ -37,23 +38,13 @@ for i in range(len(rutas)):
                         'rglobal_ssr','calidad_rglobal_ssr',
                         'vviento_ssr','calidad_vviento_ssr',
                         ])
+    datos_mes['Fecha_Hora'] = pd.to_datetime(datos_mes['Fecha_Hora'], format='%Y-%m-%d %H:%M:%S')
+    datos_mes.set_index('Fecha_Hora', inplace=True)
+    diccionario_data_frames[meses[i]] = datos_mes
 
-#¿ Corregir fechas del día anterior
-"""
-for fecha in diccionario_data_frames['febrero']['Fecha_Hora']:
-    if fecha[-8:-6] == '00':
-        print(fecha)
-"""
+#¿ Funcion para detectar el porcentaje de datos erroneos en PM2.5 en un dia
+def detectar_cantidad_erroneos(mes):
+    validos = float(diccionario_data_frames[mes].loc['2017-01-01 01:00:00':'2017-01-02 00:00:00']['calidad_pm25'].value_counts()[1.0])
+    #print(diccionario_data_frames[mes].loc['2017-01-01 01:00:00':'2017-01-02 00:00:00']['calidad_pm25'].value_counts())
+    return validos 
 
-#¿ Funcion para detectar el porcentaje de datos erroneos en PM2.5
-def detectar_porcentaje_erroneos(mes):
-    erroneos = float(diccionario_data_frames[mes]['calidad_pm25'].value_counts()[1.0])/float(diccionario_data_frames[mes]['calidad_pm25'].count())
-    erroneos = round(1- erroneos,2) #Hallar porcentaje de erróneos
-    return erroneos 
-
-
-for mes in meses:
-    print(f"{mes}: {detectar_porcentaje_erroneos(mes)*100} %")
-    if detectar_porcentaje_erroneos(mes) > 0.3:
-        print(diccionario_data_frames[mes]['calidad_pm25'].value_counts())
-    print('---  ---')
