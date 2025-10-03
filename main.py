@@ -169,7 +169,7 @@ def graficar_calidad_25_mensual():
 
     plt.title('Promedio mensual de PM2.5 en 2017', fontsize=16)
     plt.xlabel('Meses', fontsize=14)
-    plt.ylabel('Concentración (µg/m³)', fontsize=14)
+    plt.ylabel('Concentración de PM2.5 (µg/m³)', fontsize=14)
     plt.legend(fontsize=12, loc="upper right") 
     plt.xticks(rotation=45)
     plt.tight_layout()
