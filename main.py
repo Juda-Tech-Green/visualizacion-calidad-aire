@@ -204,7 +204,7 @@ def graficar_promedio_anual_apilado():
     
     plt.title('Promedio anual de PM2.5 en 2017', fontsize=16)
     plt.xlabel('Año', fontsize=14)
-    plt.ylabel('Concentración (µg/m³)', fontsize=14)
+    plt.ylabel('Concentración de PM2.5 (µg/m³)', fontsize=14)
     plt.legend(fontsize=12, loc="upper right") 
     plt.ylim(0, max(40, promedio_anual_pm25 * 1.2))  # Ajustar límite Y para visibilidad
     plt.tight_layout()
