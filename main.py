@@ -20,7 +20,7 @@ meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
 dias_meses = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 diccionario_data_frames = {}
 
-#¿ Depurar columnas no necesarias y asignar DataFrames al diccionario de acuerdo al mes
+#¿ Iterar para depurar columnas no necesarias y asignar DataFrames al diccionario de acuerdo al mes
 for i in range(len(rutas)):
     data_frame_mes = pd.read_csv(rutas[i], sep=',')
     datos_mes = data_frame_mes.drop(columns=['codigoSerial',
@@ -42,9 +42,34 @@ for i in range(len(rutas)):
     datos_mes.set_index('Fecha_Hora', inplace=True)
     diccionario_data_frames[meses[i]] = datos_mes
 
-#¿ Funcion para detectar el porcentaje de datos erroneos en PM2.5 en un dia
-def detectar_cantidad_erroneos(mes):
-    validos = float(diccionario_data_frames[mes].loc['2017-01-01 01:00:00':'2017-01-02 00:00:00']['calidad_pm25'].value_counts()[1.0])
-    #print(diccionario_data_frames[mes].loc['2017-01-01 01:00:00':'2017-01-02 00:00:00']['calidad_pm25'].value_counts())
-    return validos 
 
+def validar_datos():
+    """Esta funcion itera sobre los meses y dias del año 2017 para validar la cantidad de datos erroneos en PM2.5 y elimina las filas que contienen dichos datos."""
+    for mes in meses:
+        for i in range(dias_meses[meses.index(mes)]):
+            if i!=dias_meses[0]:
+                if i==0 or i==1: # Controlar que no haya duplicados en los dias iniciales
+                    fecha_busqueda_inicio = f"2017-{str(meses.index(mes)+1).zfill(2)}-{str(i+1).zfill(2)} 01:00:00"
+                    fecha_busqueda_fin= f"2017-{str(meses.index(mes)+1).zfill(2)}-{str(i+2).zfill(2)} 00:00:00"
+                    serie_conteo_datos = (diccionario_data_frames[mes].loc[fecha_busqueda_inicio:fecha_busqueda_fin]['calidad_pm25'].value_counts())
+                    try:
+                        if serie_conteo_datos[151] and serie_conteo_datos[151]>18:
+                            print(f"El dia {i+1} del mes de {mes} tiene mas de 18 datos erroneos en PM2.5")
+                            diccionario_data_frames[mes].drop(diccionario_data_frames[mes].loc[fecha_busqueda_inicio:fecha_busqueda_fin].index, inplace=True)  #Eliminar la fila problemática
+                    except KeyError:
+                        pass
+                else:
+                    fecha_busqueda_inicio = f"2017-{str(meses.index(mes)+1).zfill(2)}-{str(i).zfill(2)} 01:00:00"
+                    fecha_busqueda_fin = f"2017-{str(meses.index(mes)+1).zfill(2)}-{str(i+1).zfill(2)} 00:00:00"
+                    serie_conteo_datos = (diccionario_data_frames[mes].loc[fecha_busqueda_inicio:fecha_busqueda_fin]['calidad_pm25'].value_counts())
+                    try:
+                        if serie_conteo_datos[151] and serie_conteo_datos[151]>18:
+                            print(f"El dia {i+1} del mes de {mes} tiene mas de 18 datos erroneos en PM2.5")
+                            diccionario_data_frames[mes].drop(diccionario_data_frames[mes].loc[fecha_busqueda_inicio:fecha_busqueda_fin].index, inplace=True) #Eliminar la fila problemática
+                    except KeyError:
+                        pass
+
+print('ANTES DE DEPURAR DATOS')
+validar_datos()
+print('DESPUES DE DEPURAR DATOS')
+validar_datos()
