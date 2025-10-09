@@ -112,7 +112,7 @@ def validar_datos(parametro, variable):
 #¿ Llamada a la función para validar y limpiar los datos para el parámetro deseado
 validar_datos(parametro='calidad_pm25', variable='pm25') #? Para calidad pm2.5
 validar_datos(parametro='calidad_pliquida_ssr', variable='pliquida_ssr') #? Para calidad de precipitación líquida
-validar_datos(parametro='calidad_taire10_ssr',variable='taire10_ssr') #? Para calidad de temperatura del aire a 10m
+validar_datos(parametro='calidad_taire10_ssr',variable='taire10_ssr') #? Para calidad de temperatura del aire a 10m´
 validar_datos(parametro="calidad_dviento_ssr",variable="dviento_ssr") #? Para calidad de dirección de viento
 validar_datos(parametro="calidad_vviento_ssr", variable="vviento_ssr") #? Para calidad de velocidad viento
 
@@ -365,7 +365,7 @@ def graficar_rosa_vientos_anual():
         text.set_bbox(dict(facecolor='white', edgecolor='none', alpha=0.8, pad=2))
 
     # Ajustes finales
-    ax.set_theta_zero_location('N')   # 0° apunta al norte
+    ax.set_theta_zero_location('W')   # Norte hacia arriba
     ax.set_theta_direction(-1)        # sentido horario
     ax.set_title('Rosa de los vientos 2017', fontsize=14, pad=20)
     ax.legend(title='Velocidad (m/s)', loc='lower right', fontsize=10, frameon=True)
