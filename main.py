@@ -107,7 +107,7 @@ def validar_datos(parametro, variable):
             diccionario_data_frames[mes].loc[mask, variable] = np.nan
         except Exception:
             continue
-    print(f"Se corrigieron los datos para {parametro} y la varaible: {variable}")
+    print(f"Se corrigieron los datos para {parametro} y la variable: {variable}")
 
 #¿ Llamada a la función para validar y limpiar los datos para el parámetro deseado
 validar_datos(parametro='calidad_pm25', variable='pm25') #? Para calidad pm2.5
@@ -155,12 +155,13 @@ data_frame_anual = ajustar_pm25_condiciones_referencia(data_frame_anual, temp_co
 def graficar_calidad_25_diario():
     """Esta función grafica el promedio diario de PM2.5 a lo largo del año 2017."""
     df_diario = data_frame_anual.resample('D')['pm25_ref'].mean().interpolate(method='linear')
+    dias_excedidos = (df_diario>=37).sum()
     plt.figure(figsize=(12, 6))
     plt.plot(df_diario.index, df_diario, marker='o', linestyle='-', color=BLUE, markersize=4, label='PM2.5 (promedio diario)')
     plt.title('Promedio diario de PM2.5 en 2017', fontsize=16)
     plt.xlabel('Fecha', fontsize=14)
     plt.ylabel('Concentración de PM2.5 (µg/m³)', fontsize=14)
-    plt.axhline(y=37, color='r', linestyle='--', label='Normativa (37 µg/m³)')
+    plt.axhline(y=37, color='r', linestyle='--', label=f'Normativa (37 µg/m³) — Días excedidos: {dias_excedidos}')
     plt.grid(True)
     plt.legend(fontsize=12, loc="upper right") 
     plt.xticks(rotation=45)
@@ -336,8 +337,8 @@ def graficar_ciclo_semanal_pm25_precipitacion():
     ax2.add_artist(leg)
     plt.tight_layout()
     plt.savefig('ciclo_semanal_pm25_precipitacion.png')
-    #plt.show()
     print('Se generó el gráfico de ciclo semanal con frecuencia de precipitación')
+    #plt.show()
 
 def graficar_rosa_vientos_anual():
     """
@@ -370,8 +371,8 @@ def graficar_rosa_vientos_anual():
     ax.set_title('Rosa de los vientos 2017', fontsize=14, pad=20)
     ax.legend(title='Velocidad (m/s)', loc='lower right', fontsize=10, frameon=True)
     plt.savefig('rosa_vientos.png')
-    #plt.show()
     print('Se generó el gráfico de rosa de los vientos')
+    #plt.show()
 
 #¿ Llamadas a las funciones para generar los gráficos
 
