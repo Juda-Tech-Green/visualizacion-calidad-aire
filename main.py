@@ -183,13 +183,9 @@ def graficar_calidad_25_mensual():
     plt.figure(figsize=(12, 8))
     plt.bar(meses, pm25, label='PM2.5', color=COLOR_PM25, alpha=0.7)
 
-    # Línea de normativa para PM2.5 (25 µg/m³) como referencia
-    plt.axhline(y=25, color='r', linestyle='--', label='Normativa PM2.5 (25 µg/m³)')
-
     plt.title('Promedio mensual de PM2.5 en 2017', fontsize=16)
     plt.xlabel('Meses', fontsize=14)
     plt.ylabel('Concentración de PM2.5 (µg/m³)', fontsize=14)
-    plt.legend(fontsize=12, loc="upper right") 
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.savefig('promedio_mensual_pm25.png')
@@ -225,7 +221,6 @@ def graficar_promedio_anual_apilado():
     plt.title('Promedio anual de PM2.5 en 2017', fontsize=16)
     plt.xlabel('Año', fontsize=14)
     plt.ylabel('Concentración de PM2.5 (µg/m³)', fontsize=14)
-    plt.legend(fontsize=12, loc="upper right") 
     plt.ylim(0, max(40, promedio_anual_pm25 * 1.2))  # Ajustar límite Y para visibilidad
     plt.tight_layout()
     plt.savefig('promedio_anual_pm25.png')
@@ -340,6 +335,7 @@ def graficar_ciclo_semanal_pm25_precipitacion():
     print('Se generó el gráfico de ciclo semanal con frecuencia de precipitación')
     #plt.show()
 
+
 def graficar_rosa_vientos_anual():
     """
     Grafica la rosa de los vientos anual (frecuencia y velocidad)
@@ -366,8 +362,8 @@ def graficar_rosa_vientos_anual():
         text.set_bbox(dict(facecolor='white', edgecolor='none', alpha=0.8, pad=2))
 
     # Ajustes finales
-    ax.set_theta_zero_location('W')   # Norte hacia arriba
-    ax.set_theta_direction(-1)        # sentido horario
+    ax.set_theta_zero_location('E')   # 0° (Norte) arriba
+    ax.set_theta_direction(1)        # Sentido horario (como brújula)
     ax.set_title('Rosa de los vientos 2017', fontsize=14, pad=20)
     ax.legend(title='Velocidad (m/s)', loc='lower right', fontsize=10, frameon=True)
     plt.savefig('rosa_vientos.png')
@@ -375,7 +371,6 @@ def graficar_rosa_vientos_anual():
     #plt.show()
 
 #¿ Llamadas a las funciones para generar los gráficos
-
 graficar_calidad_25_diario()
 graficar_calidad_25_mensual()
 graficar_promedio_anual_apilado()
