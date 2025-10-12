@@ -346,8 +346,12 @@ def graficar_rosa_vientos_anual():
     fig = plt.figure(figsize=(8, 8))
     ax = WindroseAxes.from_ax()
 
+    # Ajustar dirección de los vientos
+    data_frame_anual['dviento_corr'] = (data_frame_anual['dviento_ssr'] + 180) % 360
+
+
     #  Crear la rosa del viento por rangos de velocidad
-    ax.bar(data_frame_anual['dviento_ssr'],
+    ax.bar(data_frame_anual['dviento_corr'],
            data_frame_anual['vviento_ssr'],
            bins=[0, 1, 5, 8,10],     # rangos de velocidad (m/s)
            cmap=plt.cm.viridis,              # escala de color
