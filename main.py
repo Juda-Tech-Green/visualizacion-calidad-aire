@@ -276,7 +276,7 @@ def graficar_ciclo_diurno_pm25():
     #plt.show()
 
 
-def graficar_ciclo_semanal_pm25_precipitacion():
+def graficar_ciclo_semanal_pm25():
     """
     Grafica el ciclo semanal promedio de PM2.5 y la distribución porcentual
     de la precipitación (pliquida_ssr) por día de la semana.
@@ -290,94 +290,177 @@ def graficar_ciclo_semanal_pm25_precipitacion():
     # Promedio de PM2.5 por día de la semana
     pm25_semanal = data_frame_anual.groupby('dia_semana')['pm25_ref'].mean()
 
-    # Precipitación total por día de la semana
-    precipitacion_semanal = data_frame_anual.groupby('dia_semana')['pliquida_ssr'].sum()
-
-    # Calcular porcentajes (frecuencia relativa)
-    precipitacion_porcentaje = (precipitacion_semanal / precipitacion_semanal.sum()) * 100
-
     # Etiquetas para el eje X
     dias_semana_labels = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
     # Crear gráfico con dos ejes Y
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+    plt.figure(figsize=(10, 6))
 
-    # Crear segundo eje Y para precipitación
-    ax2 = ax1.twinx()
-    ax2.bar(dias_semana_labels, precipitacion_porcentaje, color=PRECIPITACION, alpha=0.6, label='Precipitación (%)', zorder=1)
-    ax2.set_ylabel('Precipitación relativa (%)', color='black', fontsize=14)
-    ax2.tick_params(axis='y', labelcolor='black')
-    
-    
-    # asegurar que ax1 (línea) esté por encima de ax2
-    ax1.set_zorder(3)   # eje de las líneas por encima
-    ax2.set_zorder(2)   # eje de las barras por debajo
-    ax1.patch.set_visible(False)   # o ax1.set_facecolor('none')
-
-    # Gráfico de PM2.5 (línea, eje Y izquierdo)
-    ax1.plot(dias_semana_labels, pm25_semanal, color=BLUE, marker='o', linewidth=2, label='PM2.5 promedio', zorder=4)
-    ax1.set_xlabel('Día de la semana', fontsize=14)
-    ax1.set_ylabel('Concentración de PM2.5 (µg/m³)', color='black', fontsize=14)
-    ax1.tick_params(axis='y', labelcolor='black')
-
-    
+       # Gráfico de PM2.5 (línea, eje Y izquierdo)
+    plt.bar(dias_semana_labels, pm25_semanal, color=COLOR_PM25[:7], label='PM2.5 promedio', alpha=0.7)
+    plt.xlabel('Día de la semana', fontsize=14)
+    plt.ylabel('Concentración de PM2.5 (µg/m³)', color='black', fontsize=14)
+    plt.tick_params(axis='y', labelcolor='black')
 
     # Título y leyenda
-    fig.suptitle('Ciclo semanal de PM2.5 y distribución de precipitación en 2017', fontsize=16)
+    plt.title('Ciclo semanal de PM2.5', fontsize=16)
 
-    # Leyenda combinada
+    plt.tight_layout()
+    plt.savefig('ciclo_semanal_pm25.png')
+    print('Se generó el gráfico de ciclo semanal')
+    #plt.show()
+
+
+
+def graficar_rosa_vientos_dia_noche():
+    """
+    Genera dos rosas de los vientos:
+       Día: 06:00–18:00
+       Noche: 18:00–06:00
+    usando 'dviento_ssr' (dirección) y 'vviento_ssr' (velocidad) del DataFrame global data_frame_anual.
+    """
+
+    # --- Preparar datos base ---
+    df_viento = data_frame_anual[['dviento_ssr', 'vviento_ssr']].dropna().copy()
+
+    # Corregir dirección (de “desde dónde sopla” a “hacia dónde va”)
+    df_viento['dviento_corr'] = (df_viento['dviento_ssr'] + 180) % 360
+
+    # Extraer hora del índice
+    df_viento['hora'] = df_viento.index.hour
+
+    # Dividir en día (6–18) y noche (18–6)
+    df_dia = df_viento[(df_viento['hora'] >= 6) & (df_viento['hora'] < 18)]
+    df_noche = df_viento[(df_viento['hora'] >= 18) | (df_viento['hora'] < 6)]
+
+    # --- Crear figura con dos rosas ---
+    fig = plt.figure(figsize=(14, 7))
+
+    #  Rosa diurna
+    ax1 = fig.add_subplot(1, 2, 1, projection='windrose')
+    ax1.bar(df_dia['dviento_corr'], df_dia['vviento_ssr'],
+            bins=[0, 1, 3, 5, 8, 10],
+            cmap=plt.cm.viridis, normed=True, opening=0.8, edgecolor='white')
+
+    # Configurar orientación y etiquetas
+    ax1.set_theta_zero_location('E')
+    ax1.set_theta_direction(1)
+    valores, _ = plt.yticks()
+    ax1.set_rgrids(valores, [f"{v:.0f}%" for v in valores], angle=60, fontsize=9)
+    for text in ax1.yaxis.get_ticklabels():
+        text.set_bbox(dict(facecolor='white', edgecolor='none', alpha=0.8, pad=2))
+    ax1.set_title("Vientos diurnos (06:00–18:00)", fontsize=13, pad=20)
+    ax1.legend(title='Velocidad (m/s)', loc='lower right', fontsize=9, frameon=True)
+
+    #  Rosa nocturna
+    ax2 = fig.add_subplot(1, 2, 2, projection='windrose')
+    ax2.bar(df_noche['dviento_corr'], df_noche['vviento_ssr'],
+            bins=[0, 1, 3, 5, 8, 10],
+            cmap=plt.cm.viridis, normed=True, opening=0.8, edgecolor='white')
+
+    ax2.set_theta_zero_location('E')
+    ax2.set_theta_direction(1)
+    valores, _ = plt.yticks()
+    ax2.set_rgrids(valores, [f"{v:.0f}%" for v in valores], angle=60, fontsize=9)
+    for text in ax2.yaxis.get_ticklabels():
+        text.set_bbox(dict(facecolor='white', edgecolor='none', alpha=0.8, pad=2))
+    ax2.set_title("Vientos nocturnos (18:00–06:00)", fontsize=13, pad=20)
+    ax2.legend(title='Velocidad (m/s)', loc='lower right', fontsize=9, frameon=True)
+
+    plt.suptitle("Rosas de los vientos 2017", fontsize=15, y=0.95)
+    plt.tight_layout()
+    print('Se generó el gráfico de rosa de vientos para día y noche')
+    plt.savefig("rosa_vientos_dia_noche.png")
+    #plt.show()
+
+
+def graficar_ciclo_diurno_precipitacion_pm25():
+    """
+    Grafica el ciclo diurno combinado de:
+      Frecuencia horaria de precipitación (pliquida_ssr)
+      Promedio horario de PM2.5 (pm25_ref)
+    a partir de los datos concatenados en data_frame_anual.
+    """
+
+    # ---  Filtrar valores válidos ---
+    df = data_frame_anual[['pliquida_ssr', 'pm25_ref']].dropna(subset=['pm25_ref'])
+    df = df.copy()
+
+    # ---  Frecuencia horaria de precipitación ---
+    # Considerar solo las horas que tuvieron precipitación > 0
+    df_precip = df[df['pliquida_ssr'] > 0].copy()
+    df_precip['hora'] = df_precip.index.hour
+
+    # Contar ocurrencias por hora
+    frecuencia_por_hora = df_precip['hora'].value_counts().sort_index()
+
+    # Normalizar para que la suma sea 100 %
+    frecuencia_por_hora = (frecuencia_por_hora / frecuencia_por_hora.sum()) * 100
+
+    # Asegurar que existan las 24 horas (llenar con 0 si alguna falta)
+    frecuencia_por_hora = frecuencia_por_hora.reindex(range(24), fill_value=0)
+
+    # ---  Promedio horario de PM2.5 ---
+    df['hora'] = df.index.hour
+    promedio_pm25_por_hora = df.groupby('hora')['pm25_ref'].mean()
+
+    # ---  Crear figura y ejes ---
+    fig, ax2 = plt.subplots(figsize=(12, 6))
+    ax1 = ax2.twinx()
+    barras = ax2.bar(
+        frecuencia_por_hora.index,
+        frecuencia_por_hora.values,
+        width=0.8,
+        color="#4DB7E8",
+        alpha=0.6,
+        label="Frecuencia de precipitación (%)",
+        zorder=1
+    )
+
+    # Línea de PM2.5 (eje izquierdo)
+    linea, = ax1.plot(
+        promedio_pm25_por_hora.index,
+        promedio_pm25_por_hora.values,
+        color="#FF3333",
+        marker='o',
+        linewidth=2,
+        label="PM₂.₅ promedio (µg/m³)",
+        zorder=10
+    )
+
+    # --- Ajustes estéticos ---
+    ax1.set_title("Ciclo diurno de precipitación y PM₂.₅ (2017)", fontsize=16, pad=15)
+    ax1.set_xlabel("Hora del día", fontsize=14)
+    ax1.set_ylabel("PM₂.₅ (µg/m³)", fontsize=13, color="black")
+    ax2.set_ylabel("Frecuencia de precipitación (%)", fontsize=13, color="black")
+
+    ax1.tick_params(axis='y', labelcolor="black")
+    ax2.tick_params(axis='y', labelcolor="black")
+    ax1.set_xticks(range(0, 24, 1))
+    ax1.grid(True, linestyle="--", alpha=0.4, zorder=0)
+
+    # ---  Leyenda combinada ---
     h1, l1 = ax1.get_legend_handles_labels()
     h2, l2 = ax2.get_legend_handles_labels()
-    leg = ax2.legend(h1 + h2, l1 + l2, loc='upper right', fontsize=12, frameon=True)
-    ax2.add_artist(leg)
+    leg = ax2.legend(h1 + h2, l1 + l2, loc="upper right", fontsize=12, frameon=True)
+    leg.set_zorder(15)  # asegurar que la leyenda quede al frente
+
+    # --- Guardar gráfico ---
     plt.tight_layout()
-    plt.savefig('ciclo_semanal_pm25_precipitacion.png')
-    print('Se generó el gráfico de ciclo semanal con frecuencia de precipitación')
+    plt.savefig("ciclo_diurno_pm25_precipitacion.png")
     #plt.show()
+    print("Se generó el gráfico ciclo_diurno_pm25_precipitacion.png.")
 
-
-def graficar_rosa_vientos_anual():
-    """
-    Grafica la rosa de los vientos anual (frecuencia y velocidad)
-    a partir de las columnas 'dviento_ssr' (dirección) y 'vviento_ssr' (velocidad)
-    """
-
-    #  Crear figura y ejes tipo Windrose
-    fig = plt.figure(figsize=(8, 8))
-    ax = WindroseAxes.from_ax()
-
-    # Ajustar dirección de los vientos
-    data_frame_anual['dviento_corr'] = (data_frame_anual['dviento_ssr'] + 180) % 360
-
-
-    #  Crear la rosa del viento por rangos de velocidad
-    ax.bar(data_frame_anual['dviento_corr'],
-           data_frame_anual['vviento_ssr'],
-           bins=[0, 1, 5, 8,10],     # rangos de velocidad (m/s)
-           cmap=plt.cm.viridis,              # escala de color
-           normed=True,                      # porcentaje (%)
-           opening=0.8,                      # separación entre barras
-           edgecolor='white')
-    
-    # Mostrar frecuencias en porcentaje en los círculos ---
-    valores, etiquetas = plt.yticks()
-    ax.set_rgrids(valores, [f"{v:.0f}%" for v in valores], angle=60, fontsize=10) # Obtener porcentajes a partir de tamaño datos
-    for text in ax.yaxis.get_ticklabels(): # Agregar buffer blanco para mejor visibilidad
-        text.set_bbox(dict(facecolor='white', edgecolor='none', alpha=0.8, pad=2))
-
-    # Ajustes finales
-    ax.set_theta_zero_location('E')   # 0° (Norte) arriba
-    ax.set_theta_direction(1)        # Sentido horario (como brújula)
-    ax.set_title('Rosa de los vientos 2017', fontsize=14, pad=20)
-    ax.legend(title='Velocidad (m/s)', loc='lower right', fontsize=10, frameon=True)
-    plt.savefig('rosa_vientos.png')
-    print('Se generó el gráfico de rosa de los vientos')
-    #plt.show()
 
 #¿ Llamadas a las funciones para generar los gráficos
+
 graficar_calidad_25_diario()
 graficar_calidad_25_mensual()
 graficar_promedio_anual_apilado()
 graficar_ciclo_diurno_pm25()
-graficar_ciclo_semanal_pm25_precipitacion()
-graficar_rosa_vientos_anual()
+graficar_ciclo_semanal_pm25()
+graficar_rosa_vientos_dia_noche()
+graficar_ciclo_diurno_precipitacion_pm25()
+
+
+

@@ -20,8 +20,9 @@ El objetivo es limpiar, validar y graficar los datos para identificar patrones d
   - 📊 `promedio_mensual_pm25.png`
   - 📏 `promedio_anual_pm25.png`
   - 🕑 `ciclo_diurno_pm25.png`
-  - 📅 `ciclo_semanal_pm25_precipitacion.png`
-  - 🌬️ `rosa_vientos.png`
+  - 📅 `ciclo_semanal_pm25.png`
+  - 🌬️ `rosa_vientos_dia_noche.png`
+  - 🌧️ `ciclo_diurno_pm25_precipitacion.png`
 
 ---
 
@@ -39,11 +40,14 @@ El objetivo es limpiar, validar y graficar los datos para identificar patrones d
 ### Ciclo diurno de PM2.5
 ![Ciclo diurno](./ciclo_diurno_pm25.png)
 
-### Ciclo semanal de PM2.5 y precipitación
-![Ciclo semanal](./ciclo_semanal_pm25_precipitacion.png)
+### Ciclo semanal de PM2.5 
+![Ciclo semanal](./ciclo_semanal_pm25.png)
 
-### Rosa de los vientos anual
-![Rosa de los vientos](./rosa_vientos.png)
+### Rosa de los vientos anual para día y noche
+![Rosa de los vientos](./rosa_vientos_dia_noche.png)
+
+### Ciclo diurno de PM2.5 con frecuencia de precipitación
+![Ciclo diurno y precipitación](./ciclo_diurno_pm25_precipitacion.png)
 
 ---
 
@@ -60,7 +64,7 @@ El objetivo es limpiar, validar y graficar los datos para identificar patrones d
 - Detectar y reemplazar valores inválidos en las variables ambientales sin eliminar filas completas.
 - Ajustar la concentración de PM2.5 a **condiciones de referencia** a partir de **condiciones locales de temperatura y presión** (25 °C y 1 atm).
 - Visualizar patrones **diarios, mensuales y anuales** de PM2.5.
-- Relacionar la variabilidad del contaminante con la **precipitación semanal** y la **dispersión del viento** mediante la rosa de los vientos.
+- Relacionar la variabilidad del contaminante con la **frecuencia de precipitación** y la **dispersión del viento** mediante la rosa de los vientos.
 
 ---
 
