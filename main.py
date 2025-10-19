@@ -182,6 +182,7 @@ def graficar_calidad_25_mensual():
     # Crear gráfico de barras apiladas
     plt.figure(figsize=(12, 8))
     plt.bar(meses, pm25, label='PM2.5', color=COLOR_PM25, alpha=0.7)
+    plt.axhline(y=25, color='r', linestyle='--', label='Normativa PM2.5 (25 µg/m³)')
 
     plt.title('Promedio mensual de PM2.5 en 2017', fontsize=16)
     plt.xlabel('Meses', fontsize=14)
