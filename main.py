@@ -453,8 +453,10 @@ def graficar_ciclo_diurno_precipitacion_pm25():
     print("Se generó el gráfico ciclo_diurno_pm25_precipitacion.png.")
 
 
-#¿ Llamadas a las funciones para generar los gráficos
 
+
+#¿ Llamadas a las funciones para generar los gráficos
+"""
 graficar_calidad_25_diario()
 graficar_calidad_25_mensual()
 graficar_promedio_anual_apilado()
@@ -462,6 +464,6 @@ graficar_ciclo_diurno_pm25()
 graficar_ciclo_semanal_pm25()
 graficar_rosa_vientos_dia_noche()
 graficar_ciclo_diurno_precipitacion_pm25()
-
+"""
 
 
