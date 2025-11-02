@@ -75,6 +75,30 @@ El objetivo es limpiar, validar y graficar los datos para identificar patrones d
 | **75%** | 69.0 | **Tercer Cuartil (Q3)**. El 75% de los datos es menor o igual a este valor.                        |
 | **max** | 150.0 | **Valor máximo** encontrado en la serie.                                                           |
 ---
+
+## 📐 Fórmula ICA
+
+$$
+I_p = \frac{I_{Hi} - I_{Lo}}{BP_{Hi} - BP_{Lo}} \left( C_p - BP_{Lo} \right) + I_{Lo}
+$$
+
+**Donde:**
+
+- $ I_p $ = Índice para el contaminante $ p $
+- $ C_p $ = Concentración medida para el contaminante $ p $
+- $ BP_{Hi} $ = Punto de corte mayor o igual a $ C_p $
+- $ BP_{Lo} $ = Punto de corte menor o igual a $ C_p $
+- $ I_{Hi} $ = Valor del Índice de Calidad del Aire correspondiente al $ BP_{Hi} $
+- $ I_{Lo} $ = Valor del Índice de Calidad del Aire correspondiente al $ BP_{Lo} $
+
+### [Manual de Operación](https://www.minambiente.gov.co/wp-content/uploads/2021/06/Protocolo_Calidad_del_Aire_-_Manual_Operacion.pdf)
+
+---
+
+### Valores Empleados en el cáculo del ICA
+![valores_ICA.JPG](valores_ICA.JPG)
+### [Puntos de corte del ICA - AMVA ](https://www.metropol.gov.co/ambiental/calidad-del-aire/informes_red_calidaddeaire/Informe-Anual-Aire-2021.pdf)
+
 ## ⚙️ Tecnologías utilizadas
 - 🐍 **Python 3.13**
 - 📦 **Pandas** – Procesamiento y limpieza de datos
