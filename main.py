@@ -1,7 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from windrose import WindroseAxes
 from matplotlib import cm
 
 
@@ -456,6 +455,7 @@ def graficar_ciclo_diurno_precipitacion_pm25():
 
 
 #¿ Llamadas a las funciones para generar los gráficos
+#data_frame_anual.to_csv("datos_unidos.csv")
 """
 graficar_calidad_25_diario()
 graficar_calidad_25_mensual()

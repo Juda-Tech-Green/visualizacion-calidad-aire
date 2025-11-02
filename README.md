@@ -43,21 +43,44 @@ El objetivo es limpiar, validar y graficar los datos para identificar patrones d
 ### Ciclo semanal de PM2.5 
 ![Ciclo semanal](./ciclo_semanal_pm25.png)
 
-### Rosa de los vientos anual para día y noche
-![Rosa de los vientos](./rosa_vientos_dia_noche.png)
-
 ### Ciclo diurno de PM2.5 con frecuencia de precipitación
 ![Ciclo diurno y precipitación](./ciclo_diurno_pm25_precipitacion.png)
 
----
+### Rosa de los vientos anual para día y noche
+![Rosa de los vientos](./2da_entrega/rosa_vientos_dia_noche.png)
 
+### Rosa de los vientos anual
+![Rosa de los vientos](./2da_entrega/rosa_vientos.png)
+
+### ICA en el año
+![Rosa de los vientos](./2da_entrega/dias_categorias_ICA.png)
+
+### Calendario ICA Enero - Mayo
+![calendarioEnero_Mayo.png](2da_entrega%2FcalendarioEnero_Mayo.png)
+
+### Calendario ICA Septiembre - Diciembre
+![calendarioSeptiembre_Diciembre.png](2da_entrega%2FcalendarioSeptiembre_Diciembre.png)
+
+
+## 📈 Estadísticos básicos del ICA
+
+| Estadístico | Valor | Descripción                                                                                        |
+| :---: | :---: |:---------------------------------------------------------------------------------------------------|
+| **count** | 365.0 | Número total de valores válidados.                                                                 |
+| **mean** | 63.18 | Media aritmética de los valores de ICA.                                             |
+| **std** | 12.62 | **Desviación Estándar**, que mide la dispersión promedio de los datos con respecto a la media.     |
+| **min** | 31.0 | **Valor mínimo** encontrado en la serie.                                                           |
+| **25%** | 55.0 | **Primer Cuartil (Q1)**. El 25% de los datos es menor o igual a este valor.                        |
+| **50%** | 62.0 | **Mediana (Q2)**. El valor central de la serie, el 50% de los datos es menor o igual a este valor. |
+| **75%** | 69.0 | **Tercer Cuartil (Q3)**. El 75% de los datos es menor o igual a este valor.                        |
+| **max** | 150.0 | **Valor máximo** encontrado en la serie.                                                           |
+---
 ## ⚙️ Tecnologías utilizadas
 - 🐍 **Python 3.13**
 - 📦 **Pandas** – Procesamiento y limpieza de datos
 - 📊 **Matplotlib** – Visualización de datos
 - 🌪️ **Windrose** – Representación de direcciones y velocidades del viento
 - 🔍 **Numpy** – Cálculos numéricos
-
 ---
 
 ## 🎯 Objetivos del proyecto
